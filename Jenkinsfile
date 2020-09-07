@@ -24,8 +24,8 @@ pipeline {
     NEXUS_REPOSITORY = "nexus-jenkins-repo"
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
-  /*stages {
-    stage('Artifactory_Configuration') {
+  stages {
+  /*  stage('Artifactory_Configuration') {
       steps {
         script {
 		  rtMaven.tool = 'MAVEN_LATEST'
