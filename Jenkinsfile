@@ -17,10 +17,15 @@ pipeline {
 // artifactNumToKeepStr - Max # of builds to keep with artifacts	  
 }	
   environment {
-    SONAR_HOME = "${tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'}"   
+    SONAR_HOME = "${tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'}"
+    NEXUS_VERSION = "nexus3"
+    NEXUS_PROTOCOL = "http"
+    NEXUS_URL = "172.17.0.3:8081"
+    NEXUS_REPOSITORY = "nexus-jenkins-repo"
+    NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
   stages {
-    /*stage('Artifactory_Configuration') {
+    stage('Artifactory_Configuration') {
       steps {
         script {
 		  rtMaven.tool = 'MAVEN_LATEST'
@@ -30,7 +35,7 @@ pipeline {
           buildInfo.env.capture = true
         }			                      
       }
-    }*/
+    }
     stage('Execute_Maven') {
 	  steps {
 	    script {
@@ -38,7 +43,7 @@ pipeline {
         }			                      
       }
     }	
-    stage('SonarQube_Analysis') {
+    /*stage('SonarQube_Analysis') {
       steps {
 	    script {
           scannerHome = tool 'sonarqube-scanner'
@@ -47,31 +52,17 @@ pipeline {
       	  sh """${scannerHome}/bin/sonar-scanner"""
         }
       }	
-    }	
-     stage('Upload War To Nexus'){
-            steps{
-                script{
-
-                    def mavenPom = readMavenPom file: 'pom.xml'
-                    def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? "helloworld-snapshot" : "helloworld-release"
-                    nexusArtifactUploader artifacts: [
-                        [
-                            artifactId: 'helloworld', 
-                            classifier: '', 
-                            file: "target/helloworld-${mavenPom.version}.war", 
-                            type: 'war'
-                        ]
-                    ], 
-                    credentialsId: 'nexus3', 
-                    groupId: 'in.javahome', 
-                    nexusUrl: '172.17.0.3:8081', 
-                    nexusVersion: 'nexus3', 
-                    protocol: 'http', 
-                    repository: nexusRepoName, 
-                    version: "${mavenPom.version}"
-                    }
-            }
+    }	*/
+    stage('Nexus') {
+      steps {
+	    script {
+          scannerHome = tool 'sonarqube-scanner'
         }
+        withSonarQubeEnv('sonar') {
+      	  sh """${scannerHome}/bin/sonar-scanner"""
+        }
+      }	
+    }
 	stage('Quality_Gate') {
 	  steps {
 		  sleep(10)
