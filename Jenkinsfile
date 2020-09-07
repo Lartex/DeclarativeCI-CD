@@ -43,7 +43,7 @@ pipeline {
         }			                      
       }
     }	
-    /*stage('SonarQube_Analysis') {
+    stage('SonarQube_Analysis') {
       steps {
 	    script {
           scannerHome = tool 'sonarqube-scanner'
@@ -52,7 +52,7 @@ pipeline {
       	  sh """${scannerHome}/bin/sonar-scanner"""
         }
       }	
-    }	*/
+    }	
     stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
