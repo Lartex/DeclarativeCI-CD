@@ -24,7 +24,7 @@ pipeline {
     NEXUS_REPOSITORY = "nexus-jenkins-repo"
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
-  stages {
+  /*stages {
     stage('Artifactory_Configuration') {
       steps {
         script {
@@ -35,7 +35,7 @@ pipeline {
           buildInfo.env.capture = true
         }			                      
       }
-    }
+    }*/
     stage('Execute_Maven') {
 	  steps {
 	    script {
