@@ -103,8 +103,9 @@ pipeline {
      sh '''
       docker images
       docker ps
-      docker stop SpringbootApp  
-      docker rm SpringbootApp
+      docker stop SpringbootApp
+      docker rmi -f $(docker images)  
+      docker rm -f SpringbootApp
      '''     
     }
   }
