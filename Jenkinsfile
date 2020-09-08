@@ -104,7 +104,7 @@ pipeline {
     }
     stage('Deleting docker images and Containers') {
       steps {
-        sh 'chmod +x delete_cont.sh'
+      //  sh 'chmod +x delete_cont.sh'
         sh './delete_cont.sh'
       }
     }
@@ -123,8 +123,8 @@ pipeline {
       }
     }
   }
-  post {
-    always {
+/*   post {
+   always {
       emailext body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br>URL: ${env.BUILD_URL}", mimeType: 'text/html', subject: "Success: Project name -> ${env.JOB_NAME}", recipientProviders: [
         [$class: 'DevelopersRecipientProvider'],
         [$class: 'RequesterRecipientProvider']
@@ -138,7 +138,7 @@ pipeline {
         [$class: 'DevelopersRecipientProvider'],
         [$class: 'RequesterRecipientProvider']
       ], subject: 'Test', to: 'lartex7@gmail.com'
-    }
+    } 
   }
-
+*/
 }
