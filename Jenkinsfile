@@ -98,15 +98,8 @@ pipeline {
     }
    stage('Deleting docker images and Containers'){
     steps{
-    // sh 'chmod +x delete_cont.sh'
-     //sh './delete_cont.sh'	
-     sh '''
-      docker images
-      docker ps
-      docker stop SpringbootApp
-      docker rmi $(docker images | grep 'lartex')
-      docker rm -f SpringbootApp
-     '''     
+    //sh 'chmod +x delete_cont.sh'
+     sh './delete_cont.sh'	    
     }
   }
   stage('Build Docker Image'){

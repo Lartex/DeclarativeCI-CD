@@ -6,7 +6,7 @@
 docker stop SpringbootApp || true	
 
 # Removing all the Docker images 
-docker rmi -f $(docker images) || true 
+docker rmi -f $(docker images | grep 'lartex') || true 
 
 # Removing the Docker container SpringbootApp
 docker rm -f SpringbootApp || true  
