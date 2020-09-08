@@ -133,6 +133,6 @@ pipeline {
           sh 'echo "This will run only if failed"'
             emailext body: "Project: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "ERROR: Project name -> ${env.JOB_NAME}", to: 'lartex7@gmail.com'
         }
-    }  	 *
+    }  	 
 
 }
