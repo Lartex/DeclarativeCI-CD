@@ -119,7 +119,12 @@ pipeline {
 }	
     post {
         always {
-            emailext body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br>URL: ${env.BUILD_URL}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test', to: 'lartex7@gmail.com'
+            emailext body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br>URL: ${env.BUILD_URL}", mimeType: 'text/html', subject: "Success: Project name -> ${env.JOB_NAME}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test', to: 'lartex7@gmail.com'
+        }
+
+        failure {
+          sh 'echo "This will run only if failed"'
+            emailext body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br>URL: ${env.BUILD_URL}", mimeType: 'text/html', subject: "ERROR: Project name -> ${env.JOB_NAME}" recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test', to: 'lartex7@gmail.com'
         }
     }  	  
 
