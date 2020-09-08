@@ -104,7 +104,7 @@ pipeline {
       docker images
       docker ps
       docker stop SpringbootApp
-      docker rmi -f $(docker images |grep 'lartex')
+      docker rmi -f $(docker images | grep 'lartex')
       docker rm -f SpringbootApp
      '''     
     }
