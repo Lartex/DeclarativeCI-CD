@@ -103,6 +103,8 @@ pipeline {
      sh '''
       docker images
       docker ps
+      docker stop lartex/springtest
+      docker rm lartex/springtest
      '''     
     }
   }
