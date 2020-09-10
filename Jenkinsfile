@@ -45,15 +45,11 @@ pipeline {
             script{
                if(REPOSITORY == 'Artifactory'){
                     stage('Publish to Artifactory Repository Manager') {
-                    steps {
-                      script {
                     rtMaven.tool = 'MAVEN_LATEST'
                     rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
                     buildInfo = Artifactory.newBuildInfo()
                     rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
                         buildInfo.env.capture = true
-                      }			                      
-                    }
                   }
                   }
                   else{
