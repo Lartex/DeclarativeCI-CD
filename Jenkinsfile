@@ -32,7 +32,8 @@ pipeline {
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
   stages {
-        script{
+        stage('Choice Parameters'){
+           script{
           if(CHOICE == 'Artifactory'){
             stage('Publish to Artifactory Repository Manager') {
             steps {
@@ -84,6 +85,7 @@ pipeline {
         }
           }
             }
+        }
     stage('Execute_Maven') {
 	  steps {
 	    script {
