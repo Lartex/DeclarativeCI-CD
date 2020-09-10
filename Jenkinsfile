@@ -33,7 +33,8 @@ pipeline {
   }  
   stages {
         stage('Choice Parameters'){
-           script{
+          steps{
+            script{
           if(CHOICE == 'Artifactory'){
             stage('Publish to Artifactory Repository Manager') {
             steps {
@@ -85,6 +86,7 @@ pipeline {
         }
           }
             }
+          } 
         }
     stage('Execute_Maven') {
 	  steps {
