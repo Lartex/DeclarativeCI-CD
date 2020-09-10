@@ -6,13 +6,9 @@ pipeline {
   agent { label 'master' }
   parameters {
         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-
         text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-
         booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-
+        choice(name: 'REPOSITORY', choices: ['Nexus', 'Artifactory'], description: 'Pick something')
         password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
     }
     tools {
@@ -36,55 +32,20 @@ pipeline {
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
   stages {
-  /*  stage('Artifactory_Configuration') {
-      steps {
-        script {
-		  rtMaven.tool = 'MAVEN_LATEST'
-		  rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-		  buildInfo = Artifactory.newBuildInfo()
-		  rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-          buildInfo.env.capture = true
-        }			                      
-      }
-    }*/
-    stage('Check Parameters'){
-      steps {
-        echo "PERSON: ${PERSON}"
-        echo "BIOGRAPHY: ${BIOGRAPHY}"
-        echo "TOGGLE: ${TOGGLE}"
-        echo "CHOICE: ${CHOICE}"
-        echo "PASSWORD: ${PASSWORD}"
-
         script{
-          if(CHOICE == 'One'){
-            echo 'Parameters OK'
+          if(CHOICE == 'Artifactory'){
+            stage('Publish to Artifactory Repository Manager') {
+            steps {
+              script {
+            rtMaven.tool = 'MAVEN_LATEST'
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            buildInfo = Artifactory.newBuildInfo()
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
+                buildInfo.env.capture = true
+              }			                      
+      }
           }else{
-            echo 'Parameters FAILURE'
-             error('Stopping early…')
-          }
-        }
-      }
-    }
-
-
-    stage('Execute_Maven') {
-	  steps {
-	    script {
-		  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-        }			                      
-      }
-    }	
-    stage('SonarQube_Analysis') {
-      steps {
-	    script {
-          scannerHome = tool 'sonarqube-scanner'
-        }
-        withSonarQubeEnv('sonar') {
-      	  sh """${scannerHome}/bin/sonar-scanner"""
-        }
-      }	
-    }	
-      stage("Publish to Nexus Repository Manager") {
+                 stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
                     pom = readMavenPom file: "pom.xml";
@@ -119,6 +80,24 @@ pipeline {
                 }
             }
         }
+          }
+    stage('Execute_Maven') {
+	  steps {
+	    script {
+		  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+        }			                      
+      }
+    }	
+    stage('SonarQube_Analysis') {
+      steps {
+	    script {
+          scannerHome = tool 'sonarqube-scanner'
+        }
+        withSonarQubeEnv('sonar') {
+      	  sh """${scannerHome}/bin/sonar-scanner"""
+        }
+      }	
+    }	
 	stage('Quality_Gate') {
 	  steps {
 		  sleep(10)
