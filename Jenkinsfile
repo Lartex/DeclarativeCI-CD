@@ -49,11 +49,11 @@ pipeline {
     }*/
     stage('Check Parameters'){
       steps {
-        echo 'PERSON: ${PERSON}'
-        echo 'BIOGRAPHY: ${BIOGRAPHY}'
-        echo 'TOGGLE: ${TOGGLE}'
-        echo 'CHOICE: ${CHOICE}'
-        echo 'PASSWORD: ${PASSWORD}'
+        echo "PERSON: ${PERSON}"
+        echo "BIOGRAPHY: ${BIOGRAPHY}"
+        echo "TOGGLE: ${TOGGLE}"
+        echo "CHOICE: ${CHOICE}"
+        echo "PASSWORD: ${PASSWORD}"
       }
     }
 
