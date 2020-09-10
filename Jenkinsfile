@@ -54,6 +54,15 @@ pipeline {
         echo "TOGGLE: ${TOGGLE}"
         echo "CHOICE: ${CHOICE}"
         echo "PASSWORD: ${PASSWORD}"
+
+        script{
+          if(CHOICE == 'One'){
+            echo 'Parameters OK'
+          }else{
+            echo 'Parameters FAILURE'
+             error('Stopping early…')
+          }
+        }
       }
     }
 
