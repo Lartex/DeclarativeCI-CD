@@ -43,7 +43,6 @@ pipeline {
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
                 buildInfo.env.capture = true
               }			                      
-      }
           }else{
                  stage("Publish to Nexus Repository Manager") {
             steps {
@@ -81,6 +80,7 @@ pipeline {
             }
         }
           }
+            }
     stage('Execute_Maven') {
 	  steps {
 	    script {
