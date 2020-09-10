@@ -43,7 +43,10 @@ pipeline {
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
                 buildInfo.env.capture = true
               }			                      
-          }else{
+            }
+          }
+          }
+          else{
                  stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
@@ -73,7 +76,7 @@ pipeline {
                                 type: "pom"]
                             ]
                         );
-                    } else {
+                    }else {
                         error "*** File: ${artifactPath}, could not be found";
                     }
                 }
