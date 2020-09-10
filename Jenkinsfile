@@ -47,6 +47,17 @@ pipeline {
         }			                      
       }
     }*/
+    stage('Check Parameters'){
+      steps {
+        echo 'PERSON: ${PERSON}'
+        echo 'BIOGRAPHY: ${BIOGRAPHY}'
+        echo 'TOGGLE: ${TOGGLE}'
+        echo 'CHOICE: ${CHOICE}'
+        echo 'PASSWORD: ${PASSWORD}'
+      }
+    }
+
+
     stage('Execute_Maven') {
 	  steps {
 	    script {
