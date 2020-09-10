@@ -31,8 +31,16 @@ pipeline {
     NEXUS_REPOSITORY = "nexus-jenkins-repo"
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
-  stages {
-        stage('Choice Parameters'){
+  stages {     
+    stage('Execute_Maven') {
+	  steps {
+	    script {
+		  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+        }			                      
+      }
+    }	
+
+  stage('Choice Parameters'){
           steps{
             script{
           if(CHOICE == 'Artifactory'){
@@ -88,13 +96,7 @@ pipeline {
             }
           } 
         }
-    stage('Execute_Maven') {
-	  steps {
-	    script {
-		  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-        }			                      
-      }
-    }	
+
     stage('SonarQube_Analysis') {
       steps {
 	    script {
