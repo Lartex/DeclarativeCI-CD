@@ -32,7 +32,7 @@ pipeline {
     NEXUS_CREDENTIAL_ID = "nexus-credentials"
   }  
   stages {     
-    stage('Execute_Maven') {
+  stage('Execute_Maven') {
 	  steps {
 	    script {
 		  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
@@ -43,54 +43,50 @@ pipeline {
   stage('Choice Parameters'){
           steps{
             script{
-          if(REPOSITORY == 'Artifactory'){
-            stage('Publish to Artifactory Repository Manager') {
-            steps {
-              script {
-            rtMaven.tool = 'MAVEN_LATEST'
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-            buildInfo = Artifactory.newBuildInfo()
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-                buildInfo.env.capture = true
-              }			                      
-            }
-          }
-          }
-          else{
-                 stage("Publish to Nexus Repository Manager") {
-            steps {
-                script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                        nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: pom.groupId,
-                            version: pom.version,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
-                            artifacts: [
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
-                            ]
-                        );
-                    }else {
-                        error "*** File: ${artifactPath}, could not be found";
+               if(REPOSITORY == 'Artifactory'){
+                    stage('Publish to Artifactory Repository Manager') {
+                    steps {
+                      script {
+                    rtMaven.tool = 'MAVEN_LATEST'
+                    rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+                    buildInfo = Artifactory.newBuildInfo()
+                    rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
+                        buildInfo.env.capture = true
+                      }			                      
                     }
-                }
-            }
+                  }
+                  }
+                  else{
+                        stage("Publish to Nexus Repository Manager") {
+                              pom = readMavenPom file: "pom.xml";
+                              filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                              echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                              artifactPath = filesByGlob[0].path;
+                              artifactExists = fileExists artifactPath;
+                      if(artifactExists) {
+                          echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                          nexusArtifactUploader(
+                              nexusVersion: NEXUS_VERSION,
+                              protocol: NEXUS_PROTOCOL,
+                              nexusUrl: NEXUS_URL,
+                              groupId: pom.groupId,
+                              version: pom.version,
+                              repository: NEXUS_REPOSITORY,
+                              credentialsId: NEXUS_CREDENTIAL_ID,
+                              artifacts: [
+                                  [artifactId: pom.artifactId,
+                                  classifier: '',
+                                  file: artifactPath,
+                                  type: pom.packaging],
+                                  [artifactId: pom.artifactId,
+                                  classifier: '',
+                                  file: "pom.xml",
+                                  type: "pom"]
+                              ]
+                          );
+                      }else {
+                          error "*** File: ${artifactPath}, could not be found";
+                    }
         }
           }
             }
