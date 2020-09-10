@@ -43,7 +43,7 @@ pipeline {
   stage('Choice Parameters'){
           steps{
             script{
-          if(CHOICE == 'Artifactory'){
+          if(REPOSITORY == 'Artifactory'){
             stage('Publish to Artifactory Repository Manager') {
             steps {
               script {
