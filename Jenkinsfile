@@ -106,7 +106,6 @@ pipeline {
             }
           }
     }
-
     stage('Deleting docker images and Containers') {
       steps {
         sh 'chmod +x delete_cont.sh'
