@@ -38,12 +38,31 @@ pipeline {
           rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
         }
       }
+    }  
+    stage('SonarQube_Analysis') {
+      steps {
+        script {
+          scannerHome = tool 'sonarqube-scanner'
+        }
+        withSonarQubeEnv('sonar') {
+            sh """${scannerHome}/bin/sonar-scanner"""
+        }
+      }
     }
-    stage('Choice Parameters') {
+    stage('Quality_Gate') {
+      steps {
+          sleep(10)
+        timeout(time: 1, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+     stage('Choice Parameters') {
           steps {
             script {
           if (REPOSITORY == 'Artifactory') {
-            stage('Publish to Artifactory Repository Manager') {
+            stage('Publish to Repository Manager') {
               rtMaven.tool = 'MAVEN_LATEST'
               rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
               buildInfo = Artifactory.newBuildInfo()
@@ -52,7 +71,7 @@ pipeline {
             }
           }
                   else {
-               stage('Publish to Nexus Repository Manager') {
+               stage('Publish to Repository Manager') {
                     pom = readMavenPom file: 'pom.xml'
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
@@ -88,24 +107,6 @@ pipeline {
           }
     }
 
-    stage('SonarQube_Analysis') {
-      steps {
-        script {
-          scannerHome = tool 'sonarqube-scanner'
-        }
-        withSonarQubeEnv('sonar') {
-            sh """${scannerHome}/bin/sonar-scanner"""
-        }
-      }
-    }
-    stage('Quality_Gate') {
-      steps {
-          sleep(10)
-        timeout(time: 1, unit: 'MINUTES') {
-          waitForQualityGate abortPipeline: true
-        }
-      }
-    }
     stage('Deleting docker images and Containers') {
       steps {
         sh 'chmod +x delete_cont.sh'
