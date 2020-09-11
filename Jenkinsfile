@@ -1,6 +1,6 @@
 def server = Artifactory.server 'jenkins-artifactory-server'
 def rtMaven = Artifactory.newMavenBuild()
-buildInfo = Artifactory.newBuildInfo()
+def buildInfo
 
 pipeline {
   agent { label 'master' }
@@ -44,7 +44,7 @@ pipeline {
     stage('Execute Maven') {
       steps {
         script {
-          rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+          rtMaven.run pom: 'pom.xml', goals: 'clean install'
         }
       }
     }
@@ -69,6 +69,7 @@ pipeline {
           if (REPOSITORY == 'Artifactory') {
             rtMaven.tool = 'MAVEN_LATEST'
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
           }
