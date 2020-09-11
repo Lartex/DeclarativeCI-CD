@@ -128,7 +128,7 @@ pipeline {
     }
   }
     post {
-        always {
+        success {
       emailext body: "Project: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "Success: Project name -> ${env.JOB_NAME}", to: 'lartex7@gmail.com'
         }
 
