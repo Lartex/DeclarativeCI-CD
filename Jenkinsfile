@@ -40,6 +40,7 @@ pipeline {
     stage('Execute Maven') {
       steps {
         script {
+          def rtMaven = Artifactory.newMavenBuild()
           rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
         }
       }
