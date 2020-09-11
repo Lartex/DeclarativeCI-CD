@@ -32,14 +32,23 @@ pipeline {
     NEXUS_CREDENTIAL_ID = 'nexus-credentials'
   }
   stages {
-    stage('Execute_Maven') {
+     stage('Echo Parameters') {
+       steps{
+         echo "PERSON ${PERSON}"
+         echo "BIOGRAPHY ${BIOGRAPHY}"
+         echo "TOGGLE ${TOGGLE}"
+         echo "REPOSITORY ${REPOSITORY}"
+         echo "PASSWORD ${PASSWORD}"
+       }
+     }
+    stage('Execute Maven') {
       steps {
         script {
           rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
         }
       }
     }  
-    stage('SonarQube_Analysis') {
+    stage('SonarQube Analysis') {
       steps {
         script {
           scannerHome = tool 'sonarqube-scanner'
@@ -47,31 +56,24 @@ pipeline {
         withSonarQubeEnv('sonar') {
             sh """${scannerHome}/bin/sonar-scanner"""
         }
-      }
-    }
-    stage('Quality_Gate') {
-      steps {
-          sleep(10)
+          //Quality Gate
+        sleep(10)
         timeout(time: 1, unit: 'MINUTES') {
           waitForQualityGate abortPipeline: true
         }
       }
-    }
-
-     stage('Choice Parameters') {
+    }   
+     stage('Publish to Repository Manager') {
           steps {
             script {
-          if (REPOSITORY == 'Artifactory') {
-            stage('Publish to Repository Manager') {
+          if (REPOSITORY == 'Artifactory') {         
               rtMaven.tool = 'MAVEN_LATEST'
               rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
               buildInfo = Artifactory.newBuildInfo()
               rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-              buildInfo.env.capture = true
-            }
+              buildInfo.env.capture = true          
           }
                   else {
-               stage('Publish to Repository Manager') {
                     pom = readMavenPom file: 'pom.xml'
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
@@ -100,24 +102,23 @@ pipeline {
                             )
                         }else {
                          error "*** File: ${artifactPath}, could not be found"
-                      }
-                    }
+                      }            
                   }
             }
           }
     }
-    stage('Deleting docker images and Containers') {
+    stage('Deleting Docker') {
       steps {
         sh 'chmod +x delete_cont.sh'
         sh './delete_cont.sh'
       }
     }
-    stage('Build Docker Image') {
+    stage('Build Docker') {
       steps {
         sh 'docker build -t lartex/springtest:$BUILD_NUMBER .'
       }
     }
-    stage('Docker Container') {
+    stage('Docker Push Registry') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'docker_pass', usernameVariable: 'docker_user')]) {
           sh 'docker login -u ${docker_user} -p ${docker_pass}'
@@ -131,7 +132,6 @@ pipeline {
         success {
       emailext body: "Project: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "Success: Project name -> ${env.JOB_NAME}", to: 'lartex7@gmail.com'
         }
-
         failure {
           sh 'echo "This will run only if failed"'
       emailext body: "Project: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "ERROR: Project name -> ${env.JOB_NAME}", to: 'lartex7@gmail.com'
