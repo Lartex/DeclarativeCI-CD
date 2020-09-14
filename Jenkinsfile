@@ -73,6 +73,8 @@ pipeline {
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
              currentBuild.result = 'SUCCESS'
+             echo "${buildInfo}"
+             echo "${buildInfo.env.capture}"
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
