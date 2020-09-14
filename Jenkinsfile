@@ -71,8 +71,13 @@ pipeline {
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
+              if(rtMaven.deployer.deployArtifacts = false){
+                error('Artifactory offline')
+              }else {
             buildInfo.env.capture = true
              currentBuild.result = 'SUCCESS'
+              }
+
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
