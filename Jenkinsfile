@@ -72,12 +72,9 @@ pipeline {
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
-             if(currentBuild.result == 'SUCCESS'){
-               echo('SUCCESS ARTIFACTORY')
-          }else{
-            echo('FAILURE ARTIFACTORY')
+             currentBuild.result = 'SUCCESS'
           }
-                 } else {
+                  else {
             pom = readMavenPom file: 'pom.xml'
             filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
             echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
