@@ -68,10 +68,11 @@ pipeline {
             script {
           if (REPOSITORY == 'Artifactory') {
             rtMaven.tool = 'MAVEN_LATEST'
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server, failNoOp: true
             buildInfo = Artifactory.newBuildInfo()
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server, failNoOp: true
             buildInfo.env.capture = true
+             currentBuild.result = 'SUCCESS'
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
