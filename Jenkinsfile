@@ -71,10 +71,11 @@ pipeline {
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-              if(rtMaven.deployer.deployArtifacts = false){
+             buildInfo.env.capture = true
+              if(rtMaven.deployer.deployArtifacts == false){
                 error('Artifactory offline')
-              }else {
-            buildInfo.env.capture = true
+              }else{
+           
              currentBuild.result = 'SUCCESS'
               }
 
