@@ -67,14 +67,20 @@ pipeline {
           steps {
             script {
           if (REPOSITORY == 'Artifactory') {
+            
             rtMaven.tool = 'MAVEN_LATEST'
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server       
             buildInfo.env.capture = true
-            server.download failNoOp: true
-            server.upload failNoOp: true
-             currentBuild.result = 'SUCCESS'
+
+            def snapshots = descriptor.hasSnapshots()
+              if (snapshots) {
+                 currentBuild.result = 'SUCCESS'
+              }else{
+                echo 'Failed to upload'
+                currentBuild.result = 'FAILURE'
+              }
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
