@@ -1,6 +1,8 @@
 def server = Artifactory.server 'jenkins-artifactory-server'
 def rtMaven = Artifactory.newMavenBuild()
 def buildInfo
+def descriptor = Artifactory.mavenDescriptor()
+descriptor.version = '1.0.0'
 
 pipeline {
   agent { label 'master' }
@@ -76,6 +78,7 @@ pipeline {
 
             def snapshots = descriptor.hasSnapshots()
               if (snapshots) {
+                echo 'Success to upload'
                  currentBuild.result = 'SUCCESS'
               }else{
                 echo 'Failed to upload'
