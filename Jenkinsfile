@@ -72,8 +72,8 @@ pipeline {
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server       
             buildInfo.env.capture = true
-            server.download spec: failNoOp: true
-            server.upload spec: failNoOp: true
+            server.download failNoOp: true
+            server.upload failNoOp: true
              currentBuild.result = 'SUCCESS'
           }
                   else {
