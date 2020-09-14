@@ -72,6 +72,8 @@ pipeline {
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
+            echo "rtMaven.deployer"
+            echo "rtMaven.deployer.deployArtifacts"
              if(currentBuild.result == 'SUCCESS'){
                echo('SUCCESS ARTIFACTORY')
           }else{
