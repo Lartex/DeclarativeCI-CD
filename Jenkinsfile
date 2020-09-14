@@ -68,9 +68,9 @@ pipeline {
             script {
           if (REPOSITORY == 'Artifactory') {
             rtMaven.tool = 'MAVEN_LATEST'
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server, failNoOp: true
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server, failNoOp: true
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
              currentBuild.result = 'SUCCESS'
           }
@@ -88,6 +88,7 @@ pipeline {
                                     nexusUrl: NEXUS_URL,
                                     groupId: pom.groupId,
                                     version: pom.version,
+                                    failNoOp: true,
                                     repository: NEXUS_REPOSITORY,
                                     credentialsId: NEXUS_CREDENTIAL_ID,
                                     artifacts: [
