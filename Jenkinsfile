@@ -72,10 +72,10 @@ pipeline {
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
-             currentBuild.result = 'SUCCESS'
-             server.publishBuildInfo buildInfo
-             echo "${buildInfo}"
-              echo "${server.publishBuildInfo}"
+             if(currentBuild.result == 'SUCCESS'){
+               echo('SUCCESS ARTIFACTORY')
+          }else{
+            echo('FAILURE ARTIFACTORY')
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
