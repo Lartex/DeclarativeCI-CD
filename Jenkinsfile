@@ -1,8 +1,6 @@
 def server = Artifactory.server 'jenkins-artifactory-server'
 def rtMaven = Artifactory.newMavenBuild()
 def buildInfo
-def descriptor = Artifactory.mavenDescriptor()
-descriptor.version = '1.0.0'
 
 pipeline {
   agent { label 'master' }
@@ -69,21 +67,14 @@ pipeline {
           steps {
             script {
           if (REPOSITORY == 'Artifactory') {
-            
             rtMaven.tool = 'MAVEN_LATEST'
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server       
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
-
-            def snapshots = descriptor.hasSnapshots()
-              if (snapshots) {
-                echo 'Success to upload'
-                 currentBuild.result = 'SUCCESS'
-              }else{
-                echo 'Failed to upload'
-                currentBuild.result = 'FAILURE'
-              }
+             currentBuild.result = 'SUCCESS'
+             server.publishBuildInfo buildInfo
+             echo "${buildInfo}"
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
