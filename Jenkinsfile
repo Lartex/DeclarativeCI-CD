@@ -75,6 +75,7 @@ pipeline {
              currentBuild.result = 'SUCCESS'
              server.publishBuildInfo buildInfo
              echo "${buildInfo}"
+              echo "${server.publishBuildInfo}"
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
