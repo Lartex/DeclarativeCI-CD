@@ -71,14 +71,8 @@ pipeline {
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-             buildInfo.env.capture = true
-              if(rtMaven.deployer.deployArtifacts == false){
-                error('Artifactory offline')
-              }else{
-           
+            buildInfo.env.capture = true
              currentBuild.result = 'SUCCESS'
-              }
-
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
@@ -94,7 +88,6 @@ pipeline {
                                     nexusUrl: NEXUS_URL,
                                     groupId: pom.groupId,
                                     version: pom.version,
-                                    failNoOp: true,
                                     repository: NEXUS_REPOSITORY,
                                     credentialsId: NEXUS_CREDENTIAL_ID,
                                     artifacts: [
@@ -108,6 +101,9 @@ pipeline {
                                     type: 'pom']
                                 ]
                             )
+                            if(currentBuild.result != 'SUCCESS'){
+                                error('Fail Upload')
+                            }
                         }else {
               error "*** File: ${artifactPath}, could not be found"
             }
