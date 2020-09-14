@@ -71,11 +71,8 @@ pipeline {
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
-            buildInfo.env.capture = true
-                echo "${buildInfo.env}"
-                 echo "${server}"
+            buildInfo.env.capture = false
              currentBuild.result = 'SUCCESS'
-             echo "${currentBuild.result}"
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
