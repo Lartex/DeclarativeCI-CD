@@ -100,13 +100,13 @@ pipeline {
                                     file: 'pom.xml',
                                     type: 'pom']
                                 ]
-                            )
-                            if(currentBuild.result != 'SUCCESS'){
-                                error('Fail Upload')
-                            }
+                            )                         
                         }else {
               error "*** File: ${artifactPath}, could not be found"
             }
+             if(currentBuild.result != 'SUCCESS'){
+                                error('Fail Upload')
+                            }
                   }
             }
           }
