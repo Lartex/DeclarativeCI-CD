@@ -70,11 +70,12 @@ pipeline {
             rtMaven.tool = 'MAVEN_LATEST'
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
+                echo "${currentBuild.result}"
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot', server: server
             buildInfo.env.capture = true
+                echo "${currentBuild.result}"
              currentBuild.result = 'SUCCESS'
-             echo "${buildInfo}"
-             echo "${buildInfo.env.capture}"
+             echo "${currentBuild.result}"
           }
                   else {
             pom = readMavenPom file: 'pom.xml'
