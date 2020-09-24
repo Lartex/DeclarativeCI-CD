@@ -27,7 +27,7 @@ pipeline {
     SONAR_HOME = "${tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'}"
     NEXUS_VERSION = 'nexus3'
     NEXUS_PROTOCOL = 'http'
-    NEXUS_URL = '172.17.0.3:8081'
+    NEXUS_URL = '172.22.0.3:8081'
     NEXUS_REPOSITORY = 'nexus-jenkins-repo'
     NEXUS_CREDENTIAL_ID = 'nexus-credentials'
   }
